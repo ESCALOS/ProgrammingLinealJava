@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import com.nanoka.integrador1.tables.SupplyTable;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import org.ojalgo.optimisation.Optimisation;
 
 /**
@@ -22,7 +25,7 @@ public class QuantityMaterials extends javax.swing.JFrame {
 
         private final List<Supply> supplies = new ArrayList<>();
         private final OptimisationService optimisationService = new OptimisationService();
-        private final SupplyTable supplyTable = new SupplyTable(supplies);
+        public final SupplyTable supplyTable = new SupplyTable(supplies);
     
     /**
      * Creates new form QuantityMaterials
@@ -30,10 +33,60 @@ public class QuantityMaterials extends javax.swing.JFrame {
     public QuantityMaterials() {
         initComponents();
         setLocationRelativeTo(null);
-        supplies.add(new Supply("Madera", 3.00, 5.00, 60.00));
-        supplies.add(new Supply("Madera", 3.00, 5.00, 60.00));
         tb_supplies.setModel(supplyTable);
+        btn_calcular.setEnabled(false);
+        this.addTextFieldValidators();
         
+    }
+    
+    public void addSupply(Supply supply) {
+        this.supplyTable.addRow(supply);
+    }
+    
+    public void updateSupply(Supply supply) {
+        this.supplyTable.updateRow(tb_supplies.getSelectedRow(),supply);
+    }
+    
+    private void addTextFieldValidators() {
+        addValidator(txt_name_a);
+        addValidator(txt_name_b);
+        addValidator(txt_profitability_a);
+        addValidator(txt_profitability_b);
+        addValidator(txt_hr_a);
+        addValidator(txt_hr_b);
+        addValidator(txt_hr_available);
+    }
+    
+    private void addValidator(JTextField textField) {
+        textField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                validateInputs();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                validateInputs();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                validateInputs();
+            }
+
+        });
+    }
+    
+    public void validateInputs() {
+        boolean isValid = !txt_name_a.getText().isBlank() &&
+                                    !txt_name_b.getText().isBlank() &&
+                                    !txt_profitability_a.getText().isBlank() &&
+                                    !txt_profitability_b.getText().isBlank() &&
+                                    !txt_hr_a.getText().isBlank() &&
+                                    !txt_hr_b.getText().isBlank() &&
+                                    !txt_hr_available.getText().isBlank() &&
+                                    !this.supplies.isEmpty();
+        btn_calcular.setEnabled(isValid);
     }
 
     /**
@@ -69,8 +122,8 @@ public class QuantityMaterials extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tb_supplies = new javax.swing.JTable();
         btn_add_supply = new javax.swing.JButton();
-        btn_add_supply1 = new javax.swing.JButton();
-        btn_add_supply2 = new javax.swing.JButton();
+        btn_edit_supply = new javax.swing.JButton();
+        btn_delete_supply = new javax.swing.JButton();
         btn_calcular = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
@@ -100,6 +153,12 @@ public class QuantityMaterials extends javax.swing.JFrame {
         jLabel4.setText("Nombre:");
 
         jLabel5.setText("Rentabilidad: ");
+
+        txt_profitability_a.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_profitability_aKeyTyped(evt);
+            }
+        });
 
         check_integer_a.setText("¿Es entero?");
 
@@ -154,6 +213,12 @@ public class QuantityMaterials extends javax.swing.JFrame {
         jLabel6.setText("Nombre:");
 
         jLabel7.setText("Rentabilidad: ");
+
+        txt_profitability_b.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_profitability_bKeyTyped(evt);
+            }
+        });
 
         check_integer_b.setText("¿Es entero?");
 
@@ -261,20 +326,20 @@ public class QuantityMaterials extends javax.swing.JFrame {
             }
         });
 
-        btn_add_supply1.setBackground(new java.awt.Color(255, 255, 0));
-        btn_add_supply1.setText("Editar Insumo");
-        btn_add_supply1.addActionListener(new java.awt.event.ActionListener() {
+        btn_edit_supply.setBackground(new java.awt.Color(255, 255, 0));
+        btn_edit_supply.setText("Editar Insumo");
+        btn_edit_supply.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_add_supply1ActionPerformed(evt);
+                btn_edit_supplyActionPerformed(evt);
             }
         });
 
-        btn_add_supply2.setBackground(new java.awt.Color(255, 0, 0));
-        btn_add_supply2.setForeground(new java.awt.Color(255, 255, 255));
-        btn_add_supply2.setText("Eliminar Insumo");
-        btn_add_supply2.addActionListener(new java.awt.event.ActionListener() {
+        btn_delete_supply.setBackground(new java.awt.Color(255, 0, 0));
+        btn_delete_supply.setForeground(new java.awt.Color(255, 255, 255));
+        btn_delete_supply.setText("Eliminar Insumo");
+        btn_delete_supply.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_add_supply2ActionPerformed(evt);
+                btn_delete_supplyActionPerformed(evt);
             }
         });
 
@@ -290,9 +355,9 @@ public class QuantityMaterials extends javax.swing.JFrame {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(btn_add_supply, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_add_supply1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_edit_supply, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_add_supply2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(btn_delete_supply, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -305,8 +370,8 @@ public class QuantityMaterials extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_add_supply)
-                    .addComponent(btn_add_supply1)
-                    .addComponent(btn_add_supply2))
+                    .addComponent(btn_edit_supply)
+                    .addComponent(btn_delete_supply))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -324,7 +389,25 @@ public class QuantityMaterials extends javax.swing.JFrame {
 
         jLabel10.setText("Material A: ");
 
+        txt_hr_a.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_hr_aKeyTyped(evt);
+            }
+        });
+
         jLabel11.setText("Disponible");
+
+        txt_hr_available.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_hr_availableKeyTyped(evt);
+            }
+        });
+
+        txt_hr_b.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_hr_bKeyTyped(evt);
+            }
+        });
 
         lbl_hr_b.setText("Material B: ");
 
@@ -418,17 +501,31 @@ public class QuantityMaterials extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_add_supplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_add_supplyActionPerformed
-        Supply supply = new Supply("Cartón", 3.0,6.0,15.00);
-        this.supplyTable.addRow(supply);
+        SupplyForm supplyForm = new SupplyForm(this,true);
+        supplyForm.setVisible(true);
     }//GEN-LAST:event_btn_add_supplyActionPerformed
 
-    private void btn_add_supply2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_add_supply2ActionPerformed
+    private void btn_delete_supplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_delete_supplyActionPerformed
         this.supplyTable.removeRow(tb_supplies.getSelectedRow());
-    }//GEN-LAST:event_btn_add_supply2ActionPerformed
+        this.validateInputs();
+    }//GEN-LAST:event_btn_delete_supplyActionPerformed
 
-    private void btn_add_supply1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_add_supply1ActionPerformed
-       this.supplyTable.updateRow(tb_supplies.getSelectedRow(), new Supply("Pintura", 4.0,4.0,16.0));
-    }//GEN-LAST:event_btn_add_supply1ActionPerformed
+    private void btn_edit_supplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_edit_supplyActionPerformed
+       int selectedRow = tb_supplies.getSelectedRow();
+       if(selectedRow != -1) {
+           Supply supply = new Supply(
+                   tb_supplies.getValueAt(selectedRow, 0).toString(), 
+                   Double.valueOf(tb_supplies.getValueAt(selectedRow, 1).toString()),
+                   Double.valueOf(tb_supplies.getValueAt(selectedRow, 2).toString()),
+                   Double.valueOf(tb_supplies.getValueAt(selectedRow, 3).toString())
+           );
+            SupplyForm supplyForm = new SupplyForm(this, true, selectedRow, supply);
+            supplyForm.setVisible(true);
+        }else{
+            JOptionPane.showMessageDialog(rootPane, "Por favor, selecciona una fila para editar");
+        }
+        
+    }//GEN-LAST:event_btn_edit_supplyActionPerformed
 
     private void btn_calcularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_calcularActionPerformed
         Material materialA = new Material(txt_name_a.getText(), check_integer_a.isSelected(), Double.valueOf(txt_profitability_a.getText()));
@@ -437,19 +534,49 @@ public class QuantityMaterials extends javax.swing.JFrame {
         Optimisation.Result result = this.optimisationService.optimize(materialA, materialB, supplies, humanResource, true);
         String message = "";
         switch (result.getState()) {
-            case OPTIMAL:
-                message = "La rentabilidad óptima es " + result.getValue() + " con "+result.get(0)+" de "+txt_name_a.getText() + " y " + result.get(1) + " de "+txt_name_b.getText();
-                break;
-            case UNBOUNDED:
-                message = "Infinitas soluciones. Faltan restricciones";
-            case FAILED:
-                message = "El proceso ha fallado, verifique los datos";
-            default:
-                message = "Error desconocido";
+            case OPTIMAL -> message = "La rentabilidad óptima es " + result.getValue() + " con "+result.get(0)+" de "+txt_name_a.getText() + " y " + result.get(1) + " de "+txt_name_b.getText();
+            case UNBOUNDED -> message = "Infinitas soluciones. Faltan restricciones";
+            case FAILED -> message = "El proceso ha fallado, verifique los datos";
+            default -> message = "Error desconocido";
         }
         
         JOptionPane.showMessageDialog(rootPane, message);
     }//GEN-LAST:event_btn_calcularActionPerformed
+
+    private void txt_profitability_aKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_profitability_aKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c) && c != '.' && c != '\b') {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txt_profitability_aKeyTyped
+
+    private void txt_profitability_bKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_profitability_bKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c) && c != '.' && c != '\b') {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txt_profitability_bKeyTyped
+
+    private void txt_hr_aKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_hr_aKeyTyped
+       char c = evt.getKeyChar();
+        if (!Character.isDigit(c) && c != '.' && c != '\b') {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txt_hr_aKeyTyped
+
+    private void txt_hr_bKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_hr_bKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c) && c != '.' && c != '\b') {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txt_hr_bKeyTyped
+
+    private void txt_hr_availableKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_hr_availableKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c) && c != '.' && c != '\b') {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txt_hr_availableKeyTyped
 
     /**
      * @param args the command line arguments
@@ -488,9 +615,9 @@ public class QuantityMaterials extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_add_supply;
-    private javax.swing.JButton btn_add_supply1;
-    private javax.swing.JButton btn_add_supply2;
     private javax.swing.JButton btn_calcular;
+    private javax.swing.JButton btn_delete_supply;
+    private javax.swing.JButton btn_edit_supply;
     private javax.swing.JCheckBox check_integer_a;
     private javax.swing.JCheckBox check_integer_b;
     private javax.swing.JLabel jLabel1;

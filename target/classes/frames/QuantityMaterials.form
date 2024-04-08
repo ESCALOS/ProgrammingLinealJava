@@ -209,6 +209,9 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="txt_profitability_a">
+                  <Events>
+                    <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_profitability_aKeyTyped"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="check_integer_a">
                   <Properties>
@@ -303,6 +306,9 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="txt_profitability_b">
+                  <Events>
+                    <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_profitability_bKeyTyped"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="check_integer_b">
                   <Properties>
@@ -333,9 +339,9 @@
                           <Group type="102" attributes="0">
                               <Component id="btn_add_supply" min="-2" pref="199" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="btn_add_supply1" min="-2" pref="199" max="-2" attributes="0"/>
+                              <Component id="btn_edit_supply" min="-2" pref="199" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="btn_add_supply2" max="32767" attributes="0"/>
+                              <Component id="btn_delete_supply" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -352,8 +358,8 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="btn_add_supply" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="btn_add_supply1" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="btn_add_supply2" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btn_edit_supply" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btn_delete_supply" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
@@ -429,7 +435,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_add_supplyActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="btn_add_supply1">
+            <Component class="javax.swing.JButton" name="btn_edit_supply">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="ff" red="ff" type="rgb"/>
@@ -437,10 +443,10 @@
                 <Property name="text" type="java.lang.String" value="Editar Insumo"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_add_supply1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_edit_supplyActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="btn_add_supply2">
+            <Component class="javax.swing.JButton" name="btn_delete_supply">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="0" red="ff" type="rgb"/>
@@ -451,7 +457,7 @@
                 <Property name="text" type="java.lang.String" value="Eliminar Insumo"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_add_supply2ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_delete_supplyActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>
@@ -533,6 +539,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txt_hr_a">
+              <Events>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_hr_aKeyTyped"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel11">
               <Properties>
@@ -540,8 +549,14 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txt_hr_available">
+              <Events>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_hr_availableKeyTyped"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="txt_hr_b">
+              <Events>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_hr_bKeyTyped"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lbl_hr_b">
               <Properties>
