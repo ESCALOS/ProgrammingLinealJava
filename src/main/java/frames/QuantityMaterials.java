@@ -1,15 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package frames;
 
-import com.nanoka.integrador1.models.HumanResource;
+import com.nanoka.integrador1.models.AvailableQuantity;
 import com.nanoka.integrador1.models.Material;
-import com.nanoka.integrador1.models.Supply;
-import com.nanoka.integrador1.services.OptimisationService;
+import com.nanoka.integrador1.models.Optimizer;
 import java.util.ArrayList;
-import java.util.List;
 import com.nanoka.integrador1.tables.SupplyTable;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -23,9 +17,9 @@ import org.ojalgo.optimisation.Optimisation;
  */
 public class QuantityMaterials extends javax.swing.JFrame {
 
-        private final List<Supply> supplies = new ArrayList<>();
-        private final OptimisationService optimisationService = new OptimisationService();
-        public final SupplyTable supplyTable = new SupplyTable(supplies);
+        private final ArrayList<Material> materials = new ArrayList<>();
+        private final ArrayList<AvailableQuantity> availableSupplies = new ArrayList<>();
+        public final SupplyTable supplyTable = new SupplyTable(materials,availableSupplies);
     
     /**
      * Creates new form QuantityMaterials
@@ -33,18 +27,22 @@ public class QuantityMaterials extends javax.swing.JFrame {
     public QuantityMaterials() {
         initComponents();
         setLocationRelativeTo(null);
+        //Inicializando los materiales
+        materials.add(new Material("",false,0.0,0.0,new ArrayList<>()));
+        materials.add(new Material("",false,0.0,0.0,new ArrayList<>()));
         tb_supplies.setModel(supplyTable);
         btn_calcular.setEnabled(false);
         this.addTextFieldValidators();
         
     }
     
-    public void addSupply(Supply supply) {
-        this.supplyTable.addRow(supply);
+    public void addSupply(ArrayList<Double> supplies, AvailableQuantity availableQuantity) {
+        
+        this.supplyTable.addRow(supplies,availableQuantity);
     }
     
-    public void updateSupply(Supply supply) {
-        this.supplyTable.updateRow(tb_supplies.getSelectedRow(),supply);
+    public void updateSupply(ArrayList<Double> supplies, AvailableQuantity availableQuantity) {
+        this.supplyTable.updateRow(tb_supplies.getSelectedRow(),supplies,availableQuantity);
     }
     
     private void addTextFieldValidators() {
@@ -85,7 +83,7 @@ public class QuantityMaterials extends javax.swing.JFrame {
                                     !txt_hr_a.getText().isBlank() &&
                                     !txt_hr_b.getText().isBlank() &&
                                     !txt_hr_available.getText().isBlank() &&
-                                    !this.supplies.isEmpty();
+                                    !this.availableSupplies.isEmpty();
         btn_calcular.setEnabled(isValid);
     }
 
@@ -440,14 +438,15 @@ public class QuantityMaterials extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel9)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel10)
-                    .addComponent(txt_hr_a, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_hr_b)
-                    .addComponent(txt_hr_b, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel11)
-                        .addComponent(txt_hr_available, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txt_hr_available, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel10)
+                        .addComponent(txt_hr_a, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lbl_hr_b)
+                        .addComponent(txt_hr_b, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
@@ -512,29 +511,45 @@ public class QuantityMaterials extends javax.swing.JFrame {
 
     private void btn_edit_supplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_edit_supplyActionPerformed
        int selectedRow = tb_supplies.getSelectedRow();
+       String name =  tb_supplies.getValueAt(selectedRow, 0).toString();
+       Double available = Double.valueOf(tb_supplies.getValueAt(selectedRow, 3).toString());
+       AvailableQuantity availableSupply = new AvailableQuantity(name, available);
+       ArrayList<Double> supplyByMaterial = new ArrayList<>();
+       supplyByMaterial.add(Double.valueOf(tb_supplies.getValueAt(selectedRow, 1).toString()));
+       supplyByMaterial.add(Double.valueOf(tb_supplies.getValueAt(selectedRow, 2).toString()));
+       
        if(selectedRow != -1) {
-           Supply supply = new Supply(
-                   tb_supplies.getValueAt(selectedRow, 0).toString(), 
-                   Double.valueOf(tb_supplies.getValueAt(selectedRow, 1).toString()),
-                   Double.valueOf(tb_supplies.getValueAt(selectedRow, 2).toString()),
-                   Double.valueOf(tb_supplies.getValueAt(selectedRow, 3).toString())
-           );
-            SupplyForm supplyForm = new SupplyForm(this, true, selectedRow, supply);
+            SupplyForm supplyForm = new SupplyForm(this, true, selectedRow, supplyByMaterial, availableSupply);
             supplyForm.setVisible(true);
         }else{
             JOptionPane.showMessageDialog(rootPane, "Por favor, selecciona una fila para editar");
         }
-        
     }//GEN-LAST:event_btn_edit_supplyActionPerformed
 
     private void btn_calcularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_calcularActionPerformed
-        Material materialA = new Material(txt_name_a.getText(), check_integer_a.isSelected(), Double.valueOf(txt_profitability_a.getText()));
-        Material materialB = new Material(txt_name_b.getText(), check_integer_b.isSelected(), Double.valueOf(txt_profitability_b.getText()));
-        HumanResource humanResource = new HumanResource("Recurso Humano", Double.valueOf(txt_hr_a.getText()), Double.valueOf(txt_hr_b.getText()), Double.valueOf(txt_hr_available.getText()));
-        Optimisation.Result result = this.optimisationService.optimize(materialA, materialB, supplies, humanResource, true);
-        String message = "";
+       // Material A
+        materials.get(0).setName(txt_name_a.getText());
+        materials.get(0).setInteger(check_integer_a.isSelected());
+        materials.get(0).setProfitability(Double.valueOf(txt_profitability_a.getText()));
+        materials.get(0).setHumanResource(Double.valueOf(txt_hr_a.getText()));
+        
+        // Material B
+        materials.get(1).setName(txt_name_b.getText());
+        materials.get(1).setInteger(check_integer_b.isSelected());
+        materials.get(1).setProfitability(Double.valueOf(txt_profitability_b.getText()));
+        materials.get(1).setHumanResource(Double.valueOf(txt_hr_b.getText()));
+
+        // Restricciones
+        AvailableQuantity availableHR = new AvailableQuantity("Recursos Humanos", Double.valueOf(txt_hr_available.getText()));
+        
+        //Optimizar
+        Optimizer optimizer = new Optimizer(materials, availableSupplies, availableHR, true);
+        Optimisation.Result result = optimizer.optimize();
+        
+        String message;
         switch (result.getState()) {
-            case OPTIMAL -> message = "La rentabilidad óptima es " + result.getValue() + " con "+result.get(0)+" de "+txt_name_a.getText() + " y " + result.get(1) + " de "+txt_name_b.getText();
+            case OPTIMAL -> message = String.format("La rentabilidad óptima es %.2f con %.2f de %s y %.2f de %s", 
+                                result.getValue(), result.get(0), txt_name_a.getText(), result.get(1), txt_name_b.getText());
             case UNBOUNDED -> message = "Infinitas soluciones. Faltan restricciones";
             case FAILED -> message = "El proceso ha fallado, verifique los datos";
             default -> message = "Error desconocido";

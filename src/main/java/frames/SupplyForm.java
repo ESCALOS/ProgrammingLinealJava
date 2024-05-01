@@ -1,9 +1,11 @@
 package frames;
 
+import com.nanoka.integrador1.models.AvailableQuantity;
+import com.nanoka.integrador1.models.Material;
 import com.nanoka.integrador1.models.Supply;
 import java.awt.Color;
+import java.util.ArrayList;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -25,7 +27,7 @@ public class SupplyForm extends javax.swing.JDialog {
         this.addTextFieldValidator();
     }
     
-    public SupplyForm(QuantityMaterials parent, boolean modal, int row, Supply supply) {
+    public SupplyForm(QuantityMaterials parent, boolean modal, int row, ArrayList<Double> quantityByMaterial, AvailableQuantity availableQuantity) {
         super(parent, modal);
         this.quantityMaterials = parent;
         this.row = row;
@@ -34,7 +36,7 @@ public class SupplyForm extends javax.swing.JDialog {
         setLocationRelativeTo(null);
         setTitle("Editar Insumo");
         
-        this.FillFields(supply);
+        this.FillFields(quantityByMaterial, availableQuantity);
         this.ModifyUpdateButton();
         this.addTextFieldValidator();
     }
@@ -52,11 +54,11 @@ public class SupplyForm extends javax.swing.JDialog {
        btn_add_supply.setForeground(Color.black);
     }
     
-    private void FillFields(Supply supply) {
-        txt_name.setText(supply.getName());
-        txt_quantity_a.setText(supply.getQuantityMaterialA().toString());
-        txt_quantity_b.setText(supply.getQuantityMaterialB().toString());
-        txt_quantity_available.setText(supply.getAvailable().toString());
+    private void FillFields(ArrayList<Double> suppliesByMaterial, AvailableQuantity availableQuantity) {
+        txt_name.setText(availableQuantity.getName());
+        txt_quantity_a.setText(suppliesByMaterial.get(0).toString());
+        txt_quantity_b.setText(suppliesByMaterial.get(1).toString());
+        txt_quantity_available.setText(availableQuantity.getAvailable().toString());
     }
     
     private void addValidator(JTextField textField) {
@@ -205,9 +207,9 @@ public class SupplyForm extends javax.swing.JDialog {
                     .addComponent(jLabel5)
                     .addComponent(txt_quantity_available, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(21, 21, 21)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_add_supply, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_add_supply, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -219,16 +221,16 @@ public class SupplyForm extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void btn_add_supplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_add_supplyActionPerformed
-        Supply supply = new Supply(
-                txt_name.getText(),
-                Double.valueOf(txt_quantity_a.getText()),
-                Double.valueOf(txt_quantity_b.getText()),
-                Double.valueOf(txt_quantity_available.getText())
-        );
+        String name = txt_name.getText();
+        ArrayList<Double> supplies = new ArrayList<>();
+        supplies.add(Double.valueOf(txt_quantity_a.getText()));
+        supplies.add(Double.valueOf(txt_quantity_b.getText()));
+        Double available = Double.valueOf(txt_quantity_available.getText());
+        AvailableQuantity availableQuantity = new AvailableQuantity(name, available);
         if(this.row == -1) {
-            this.quantityMaterials.supplyTable.addRow(supply);
+            this.quantityMaterials.supplyTable.addRow(supplies, availableQuantity);
         }else {
-            this.quantityMaterials.supplyTable.updateRow(this.row, supply);
+            this.quantityMaterials.supplyTable.updateRow(this.row, supplies,availableQuantity);
         }
         dispose();
         this.quantityMaterials.validateInputs();

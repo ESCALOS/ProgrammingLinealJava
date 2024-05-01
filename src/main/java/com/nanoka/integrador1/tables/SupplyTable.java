@@ -1,20 +1,23 @@
 package com.nanoka.integrador1.tables;
 
-import com.nanoka.integrador1.models.Supply;
-import java.util.List;
+import com.nanoka.integrador1.models.AvailableQuantity;
+import com.nanoka.integrador1.models.Material;
+import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 
 public class SupplyTable extends AbstractTableModel{
     private final String[] columnNames = {"Nombre", "Cantidad Material A", "Cantidad Material B", "Disponible"};
-    private final List<Supply> supplies;
+    private final ArrayList<Material> materials;
+    private final ArrayList<AvailableQuantity> availableQuantities;
     
-    public SupplyTable(List<Supply> supplies) {
-        this.supplies = supplies;
+    public SupplyTable(ArrayList<Material> materials, ArrayList<AvailableQuantity> availableQuantities) {
+        this.materials = materials;
+        this.availableQuantities = availableQuantities;
     }
     
     @Override
     public int getRowCount() {
-        return supplies.size();
+        return availableQuantities.size();
     }
 
     @Override
@@ -24,12 +27,12 @@ public class SupplyTable extends AbstractTableModel{
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Supply supply = supplies.get(rowIndex);
+        AvailableQuantity availableQuantity = availableQuantities.get(rowIndex);
         return switch (columnIndex) {
-            case 0 -> supply.getName();
-            case 1 -> supply.getQuantityMaterialA();
-            case 2 -> supply.getQuantityMaterialB();
-            case 3 -> supply.getAvailable();
+            case 0 -> availableQuantity.getName();
+            case 1 -> materials.get(0).getSupplies().get(rowIndex);
+            case 2 -> materials.get(1).getSupplies().get(rowIndex);
+            case 3 -> availableQuantity.getAvailable();
             default -> null;
         };
     }
@@ -39,22 +42,28 @@ public class SupplyTable extends AbstractTableModel{
         return columnNames[column];
     }
 
-    public void addRow(Supply supply) {
-        supplies.add(supply);
-        fireTableRowsInserted(supplies.size() - 1, supplies.size() - 1);
+    public void addRow(ArrayList<Double> suppliesByMaterial, AvailableQuantity availableQuantity) {
+        materials.get(0).getSupplies().add(suppliesByMaterial.get(0));
+        materials.get(1).getSupplies().add(suppliesByMaterial.get(1));
+        availableQuantities.add(availableQuantity);
+        fireTableRowsInserted(availableQuantities.size() - 1, availableQuantities.size() - 1);
     }
     
-    public void updateRow(int row, Supply supply) {
-        supplies.set(row, supply);
+    public void updateRow(int row, ArrayList<Double> suppliesByMaterial, AvailableQuantity availableQuantity) {
+        materials.get(0).getSupplies().set(row,suppliesByMaterial.get(0));
+        materials.get(1).getSupplies().set(row,suppliesByMaterial.get(1));
+        availableQuantities.set(row, availableQuantity);
         fireTableRowsUpdated(row, row);
     }
 
     public void removeRow(int row) {
-        supplies.remove(row);
+        materials.get(0).getSupplies().remove(row);
+        materials.get(1).getSupplies().remove(row);
+        availableQuantities.remove(row);
         fireTableRowsDeleted(row, row);
     }
 
-    public Supply getRow(int row) {
-        return supplies.get(row);
+    public AvailableQuantity getRow(int row) {
+        return availableQuantities.get(row);
     }
 }

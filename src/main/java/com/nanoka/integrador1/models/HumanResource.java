@@ -1,5 +1,6 @@
 package com.nanoka.integrador1.models;
 
+import java.util.ArrayList;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,6 @@ import lombok.Setter;
 @Setter
 public class HumanResource {
     private String name;
-    private Double quantityMaterialA;
-    private Double quantityMaterialB;
+    private ArrayList<Double> quantities;
     private Double available;
 }
