@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.ojalgo.netio.BasicLogger;
 import org.ojalgo.optimisation.ExpressionsBasedModel;
 import org.ojalgo.optimisation.Optimisation;
 import org.ojalgo.optimisation.Variable;
@@ -18,7 +17,6 @@ public class Optimizer {
     private ArrayList<Material> materials;
     private ArrayList<AvailableQuantity> availableSupplies;
     private AvailableQuantity availableHR;
-    private boolean isMax;
     
     public Optimisation.Result optimize() {
         ExpressionsBasedModel model = new ExpressionsBasedModel();
@@ -54,13 +52,6 @@ public class Optimizer {
         model.addExpression("Mínimo de material B")
                 .lower(0)
                 .set(Y, 1);
-        
-        
-        BasicLogger.debug(model);
-        if(isMax) {
-            return model.maximise();
-        }else {
-            return model.minimise();
-        }
+        return model.maximise();
     }
 }

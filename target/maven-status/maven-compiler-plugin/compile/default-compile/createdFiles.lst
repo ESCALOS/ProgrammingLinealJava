@@ -1,5 +1,4 @@
 frames/QuantityMaterials$6.class
-com/nanoka/integrador1/models/Supply.class
 com/nanoka/integrador1/models/AvailableQuantity.class
 com/nanoka/integrador1/models/Material.class
 frames/SupplyForm$7.class
@@ -14,7 +13,6 @@ com/nanoka/integrador1/models/Optimizer.class
 frames/QuantityMaterials.class
 frames/SupplyForm$6.class
 frames/QuantityMaterials$2.class
-com/nanoka/integrador1/models/HumanResource.class
 frames/QuantityMaterials$13.class
 frames/QuantityMaterials$7.class
 frames/SupplyForm$7$1.class

@@ -62,8 +62,4 @@ public class SupplyTable extends AbstractTableModel{
         availableQuantities.remove(row);
         fireTableRowsDeleted(row, row);
     }
-
-    public AvailableQuantity getRow(int row) {
-        return availableQuantities.get(row);
-    }
 }

@@ -1,8 +1,6 @@
 package frames;
 
 import com.nanoka.integrador1.models.AvailableQuantity;
-import com.nanoka.integrador1.models.Material;
-import com.nanoka.integrador1.models.Supply;
 import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.JTextField;

@@ -11,19 +11,12 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.ojalgo.optimisation.Optimisation;
 
-/**
- *
- * @author nanoka
- */
 public class QuantityMaterials extends javax.swing.JFrame {
 
-        private final ArrayList<Material> materials = new ArrayList<>();
-        private final ArrayList<AvailableQuantity> availableSupplies = new ArrayList<>();
-        public final SupplyTable supplyTable = new SupplyTable(materials,availableSupplies);
+    private final ArrayList<Material> materials = new ArrayList<>();
+    private final ArrayList<AvailableQuantity> availableSupplies = new ArrayList<>();
+    public final SupplyTable supplyTable = new SupplyTable(materials,availableSupplies);
     
-    /**
-     * Creates new form QuantityMaterials
-     */
     public QuantityMaterials() {
         initComponents();
         setLocationRelativeTo(null);
@@ -543,7 +536,7 @@ public class QuantityMaterials extends javax.swing.JFrame {
         AvailableQuantity availableHR = new AvailableQuantity("Recursos Humanos", Double.valueOf(txt_hr_available.getText()));
         
         //Optimizar
-        Optimizer optimizer = new Optimizer(materials, availableSupplies, availableHR, true);
+        Optimizer optimizer = new Optimizer(materials, availableSupplies, availableHR);
         Optimisation.Result result = optimizer.optimize();
         
         String message;
